@@ -8,6 +8,8 @@ import lombok.Data; // Opcional, ayuda a reducir código
 @Data // Lombok: genera getters, setters y toString automáticamente
 public class User {
 
+    public  User() {}
+
     public User(String email, String password, String name) {
         this.name = email;
         this.email = name;

@@ -7,16 +7,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.testapi.testapi.services.UserService;
+import com.testapi.testapi.services.FileStorageService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private FileStorageService fileStorageService;
+
+    private final Path rootLocation = Paths.get("archivos");
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -36,6 +45,20 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid  @RequestBody UserDto user) {
         return userService.saveUser(new User(user.getEmail(), user.getPassword(), user.getName()));
+    }
+
+        @PostMapping("upload")
+    public ResponseEntity createUserFile(@Valid  @ModelAttribute UserDto user) {
+
+            try {
+                var file = user.getFile();
+                 fileStorageService.store(file);
+                var newUser = userService.saveUser(new User(user.getEmail(), user.getPassword(), user.getName()));
+                return ResponseEntity.ok().body(newUser);
+            } catch (IOException e) {
+                return ResponseEntity.status(500).body("Error al subir el archivo.");
+            }
+
     }
 
 }
