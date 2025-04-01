@@ -1,4 +1,4 @@
-package com.testapi.testapi.Dtos;
+package com.testapi.testapi.contracts.Requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
-public class UserDto {
+public class CreateUserDto {
 
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(min = 3, message = "El nombre debe tener al menos 3 caracteres")
@@ -53,3 +53,4 @@ public class UserDto {
         this.password = password;
     }
 }
+

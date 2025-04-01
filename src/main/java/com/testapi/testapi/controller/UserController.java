@@ -1,6 +1,7 @@
 package com.testapi.testapi.controller;
 
-import com.testapi.testapi.Dtos.UserDto;
+import com.testapi.testapi.contracts.Requests.CreateUserDto;
+import com.testapi.testapi.contracts.dtos.UserDto;
 import com.testapi.testapi.models.User;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.testapi.testapi.services.UserService;
 import com.testapi.testapi.services.FileStorageService;
-import org.springframework.data.domain.Page;
+import com.testapi.testapi.Dtos.PagedResult;
 
 
 import java.util.List;
@@ -43,12 +44,12 @@ public class UserController {
     }
     // Guardar un nuevo usuario
     @PostMapping
-    public User createUser(@Valid  @RequestBody UserDto user) {
+    public User createUser(@Valid  @RequestBody CreateUserDto user) {
         return userService.saveUser(new User(user.getEmail(), user.getPassword(), user.getName()));
     }
 
         @PostMapping("upload")
-    public ResponseEntity createUserFile(@Valid  @ModelAttribute UserDto user) {
+    public ResponseEntity createUserFile(@Valid  @ModelAttribute CreateUserDto user) {
 
             try {
                 var file = user.getFile();
@@ -60,7 +61,7 @@ public class UserController {
             }
     }
     @GetMapping("paged")
-    public ResponseEntity<Page<User>> getUserPaged (
+    public ResponseEntity<PagedResult<UserDto>> getUserPaged (
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10")  int size,
             @RequestParam()  String email,
