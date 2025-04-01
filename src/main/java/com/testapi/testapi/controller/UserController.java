@@ -8,12 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.testapi.testapi.services.UserService;
 import com.testapi.testapi.services.FileStorageService;
+import org.springframework.data.domain.Page;
+
 
 import java.util.List;
 import java.util.Map;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -58,7 +58,17 @@ public class UserController {
             } catch (IOException e) {
                 return ResponseEntity.status(500).body("Error al subir el archivo.");
             }
+    }
+    @GetMapping("paged")
+    public ResponseEntity<Page<User>> getUserPaged (
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10")  int size,
+            @RequestParam()  String email,
+            @RequestParam()  String name
+    ) {
 
+       var user = userService.getUserPaged(page, size, email, name);
+       return ResponseEntity.ok().body(user);
     }
 
 }

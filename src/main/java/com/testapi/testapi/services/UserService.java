@@ -1,9 +1,16 @@
 package com.testapi.testapi.services;
 
+import com.testapi.testapi.specifications.UserSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.testapi.testapi.models.User;
 import com.testapi.testapi.repository.UserRepository;
@@ -36,6 +43,17 @@ public class UserService {
     // Buscar por email
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Page<User> getUserPaged(int page, int size, String email, String name) {
+
+        Pageable pegeable = PageRequest.of(page, size);
+
+        Specification<User> spec = Specification
+                .where(UserSpecifications.hasEmailLike(email))
+                .and(UserSpecifications.hasName(name));
+
+        return userRepository.findAll(spec, pegeable);
     }
 
 }
